@@ -73,7 +73,7 @@ web3.eth.getAccounts()
   })
   .then((votesRama) => {
     console.log('votesRama', votesRama);
-    return deployedContract.methods.voteForCandidate2(asciiToHex('Rama')).send();
+    return deployedContract.methods.voteForCandidate(asciiToHex('Rama')).send();
   })
   .then((voteResult) => {
      console.log('voteResult', voteResult);
