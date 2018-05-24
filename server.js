@@ -25,7 +25,7 @@ web3.eth.getAccounts()
     settings: {
       outputSelection: {
         "*": {
-          "*": [ "metadata", "abi" ]
+          "*": [ "abi", "evm.bytecode" ]
         }
       }
     }
@@ -49,21 +49,19 @@ web3.eth.getAccounts()
   if (warnings.length) {
     // console.warn('solc.compile: ' + warnings.join('\n'));
   }
-  console.log("HERE: %o", compiledCode.contracts.voting.Voting);
-  const byteCode = compiledCode.contracts.voting.bytecode;
-  // console.log('byteCode', byteCode);
-  const abiDefinition = JSON.parse(compiledCode.contracts[':Voting'].interface);
-  // console.log('abiDefinition', abiDefinition);
+  const byteCode = compiledCode.contracts.voting.Voting.evm.bytecode.object;
+  console.log('byteCode', byteCode);
+  const abiDefinition = compiledCode.contracts.voting.Voting.abi;
+  console.log('abiDefinition', abiDefinition);
 
   const VotingContract = new web3.eth.Contract(abiDefinition,
     {data: byteCode, from: accounts[0], gas: 4700000}
   );
-  // console.log('VotingContract', VotingContract);
+//   console.log('VotingContract', VotingContract);
 
   let deployedContract = null;
 
-  VotingContract.deploy({arguments: [candidates.map(asciiToHex)]})
-  .send(function (error, transactionHash) {
+  VotingContract.deploy({arguments: [candidates.map(asciiToHex)]}).send(function (error, transactionHash) {
     // console.log('transactionHash', transactionHash);
   })
   .then((result) => {
@@ -75,7 +73,7 @@ web3.eth.getAccounts()
   })
   .then((votesRama) => {
     console.log('votesRama', votesRama);
-    return deployedContract.methods.voteForCandidate(asciiToHex('Rama')).send();
+    return deployedContract.methods.voteForCandidate2(asciiToHex('Rama')).send();
   })
   .then((voteResult) => {
      console.log('voteResult', voteResult);
